@@ -1,9 +1,10 @@
-//basic setups
+//基本のセットアップ
 let canvas = document.querySelector('canvas');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 let c = canvas.getContext('2d');
-//declare some variables
+
+//変数宣言
 let mouse = {
   x: undefined,
   y: undefined
@@ -16,14 +17,15 @@ let colorArray = [
   '#F3FFBD',
   '#FF1654'
 ]
-//interact with the canvas
+
+//マウスの座標の取得
 window.addEventListener('mousemove',
   function(e){
     mouse.x = e.x;
     mouse.y = e.y;
-    console.log(mouse);
+    //console.log(mouse);
 });
-
+//ウィンドウの大きさを変えた場合、キャンバスの大きさを合わせる
 window.addEventListener('resize',
   function(){
     canvas.width = window.innerWidth;
@@ -31,7 +33,7 @@ window.addEventListener('resize',
     init();
 })
 
-//create a circle object
+//円オブジェクト作成
 function Circle(x, y, dx, dy, radius){
   this.radius = radius;
   this.x = x;
@@ -39,7 +41,7 @@ function Circle(x, y, dx, dy, radius){
   this.dx = dx;
   this.dy = dy;
   this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
-  //draw the circle
+  //円を書く
   this.draw = function(){
     c.beginPath();
     c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
@@ -47,23 +49,22 @@ function Circle(x, y, dx, dy, radius){
     //c.stroke();
     c.fill();
   }
-  //use draw method and update the circle
+  //円のアップデート
   this.update = function(){
     this.draw();
-    //if the circle's edge hit the edge of the creen change the dx dy to nagative
+    //円の外側がスクリーンのエッジにタッチした場合、dxとdyをマイナスにする
     if(this.x + radius > innerWidth || this.x - radius < 0){
       this.dx = -this.dx;
     }
     if(this.y + radius > innerHeight || this.y - radius < 0){
       this.dy = -this.dy;
     }
-    //update the position of the circle
+    //円の座標をアップデートする
     this.y += this.dy;
     this.x += this.dx;
-    //interact with mouse
-    //if mouse is in a curtain range of the circle then do something
+    //マウスと連動する
+    //連動の範囲を決める
     if(mouse.x - this.x < 50 && mouse.x - this.x > - 50 && mouse.y - this.y < 50 & mouse.y - this.y > -50){
-      //set the max radius so the radius will not grow indefinitely
       if(this.radius < maxRadius){
         this.radius += 2.5;
       }
@@ -72,11 +73,10 @@ function Circle(x, y, dx, dy, radius){
     }
   }
 }
-//end of circle object
 
 
-//create multiple randomly located circle in an array
-//and put them in an circleAray
+
+//円オブジェクトから円を作り、配列に入れる
 let number = 600;
 let circleArray = [];
 function init(){
